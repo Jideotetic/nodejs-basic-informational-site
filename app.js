@@ -9,13 +9,20 @@ app.get(["/", "/about", "/contact-me"], (req, res) => {
 	res.sendFile(pathName + fileName);
 });
 
+app.use(express.static("public"));
+
+app.get("*", (req, res) => {
+	const pathName = path.join(__dirname, "project/");
+	res.status(404).sendFile(pathName + "404.html");
+});
+
 const PORT = 3000;
 
 app.listen(PORT, () =>
 	console.log(`My first Express app - listening on port ${PORT}!`)
 );
 
-app.use((req, res) => {
-	const pathName = path.join(__dirname, "project/");
-	res.status(404).sendFile(pathName + "404.html");
-});
+// app.use((req, res) => {
+// 	const pathName = path.join(__dirname, "project/");
+// 	res.status(404).sendFile(pathName + "404.html");
+// });

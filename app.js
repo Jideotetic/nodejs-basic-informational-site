@@ -3,11 +3,25 @@ const express = require("express");
 const app = express();
 const path = require("node:path");
 
-app.get(["/", "/about", "/contact-me"], (req, res) => {
-	const pathName = path.join(__dirname, "project/");
+app.get(["/", "/about", "/contact-me"], (req, res, next) => {
+	var options = {
+		root: path.join(__dirname, "project"),
+		dotfiles: "deny",
+		headers: {
+			"x-timestamp": Date.now(),
+			"x-sent": true,
+		},
+	};
+
 	const fileName = req.url == "/" ? "index.html" : req.url + ".html";
 
-	res.sendFile(pathName + fileName);
+	res.sendFile(fileName, options, (err) => {
+		if (err) {
+			next(err);
+		} else {
+			console.log("Sent:", fileName);
+		}
+	});
 });
 
 app.use(express.static("public"));
